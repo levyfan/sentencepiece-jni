@@ -89,6 +89,7 @@ public class SentencePieceProcessorTest {
             int j = jasp.pieceToId(piece);
             if (i != j) {
                 System.out.println("i=" + i + ",piece=" + piece + ",j=" + j);
+                System.out.println(piece.length());
                 System.out.printf("\\u%04x\n", (int) piece.charAt(0));
             }
             Assert.assertEquals(i, jasp.pieceToId(piece));
