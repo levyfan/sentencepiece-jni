@@ -520,6 +520,8 @@ JNIEXPORT jint JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
     int id = spp->PieceToId(min_string_view(static_cast<const char *>(str), len));
     if (id == 0) {
         std::cerr << "sppPieceToId:piece=" << std::string((char *) str, len) << ",id=" << id << std::endl;
+        char c = *((char *) str);
+        std::cerr << "sppPieceToId:piece=d" << (int) c << ",length=" << len << std::endl;
     }
     env->ReleasePrimitiveArrayCritical(piece, str, JNI_ABORT);
 
