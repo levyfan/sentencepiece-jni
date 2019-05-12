@@ -26,7 +26,7 @@ std::string jbyteArrayToString(JNIEnv *env, jbyteArray array) {
 
     void *str = env->GetPrimitiveArrayCritical(array, nullptr);
     std::string s((char *) str, len);
-    env->ReleasePrimitiveArrayCritical(array, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(array, str, 0);
 
     return s;
 }
@@ -74,7 +74,7 @@ std::vector<int> jintArrayToVectorInt(JNIEnv *env, jintArray array) {
 
     void *data = env->GetPrimitiveArrayCritical(array, nullptr);
     std::vector<int> vec((int*) data, ((int*) data) + len);
-    env->ReleasePrimitiveArrayCritical(array, data, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(array, data, 0);
 
     return vec;
 }
@@ -114,7 +114,7 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 
     void* str = env->GetPrimitiveArrayCritical(filename, nullptr);
     Status status = spp->Load(min_string_view(static_cast<const char *>(str), len));
-    env->ReleasePrimitiveArrayCritical(filename, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(filename, str, 0);
 
     throwStatus(env, status);
 }
@@ -132,7 +132,7 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 
     void* str = env->GetPrimitiveArrayCritical(filename, nullptr);
     spp->LoadOrDie(min_string_view(static_cast<const char *>(str), len));
-    env->ReleasePrimitiveArrayCritical(filename, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(filename, str, 0);
 }
 
 /*
@@ -148,7 +148,7 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 
     void* str = env->GetPrimitiveArrayCritical(serialized, nullptr);
     Status status = spp->LoadFromSerializedProto(min_string_view(static_cast<const char *>(str), len));
-    env->ReleasePrimitiveArrayCritical(serialized, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(serialized, str, 0);
 
     throwStatus(env, status);
 }
@@ -166,7 +166,7 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 
     void* str = env->GetPrimitiveArrayCritical(extra_option, nullptr);
     Status status = spp->SetEncodeExtraOptions(min_string_view(static_cast<const char *>(str), len));
-    env->ReleasePrimitiveArrayCritical(extra_option, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(extra_option, str, 0);
 
     throwStatus(env, status);
 }
@@ -184,7 +184,7 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 
     void* str = env->GetPrimitiveArrayCritical(extra_option, nullptr);
     Status status = spp->SetDecodeExtraOptions(min_string_view(static_cast<const char *>(str), len));
-    env->ReleasePrimitiveArrayCritical(extra_option, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(extra_option, str, 0);
 
     throwStatus(env, status);
 }
@@ -231,7 +231,7 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 
     void* str = env->GetPrimitiveArrayCritical(filename, nullptr);
     Status status = spp->LoadVocabulary(min_string_view(static_cast<const char *>(str), len), threshold);
-    env->ReleasePrimitiveArrayCritical(filename, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(filename, str, 0);
 
     throwStatus(env, status);
 }
@@ -250,7 +250,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePiec
 
     void* str = env->GetPrimitiveArrayCritical(input, nullptr);
     Status status = spp->Encode(min_string_view(static_cast<const char *>(str), len), &pieces);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(input, str, 0);
 
     if (throwStatus(env, status)) {
         return nullptr;
@@ -272,7 +272,7 @@ JNIEXPORT jintArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJN
 
     void* str = env->GetPrimitiveArrayCritical(input, nullptr);
     Status status = spp->Encode(min_string_view(static_cast<const char *>(str), len), &ids);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(input, str, 0);
 
     if (throwStatus(env, status)) {
         return nullptr;
@@ -335,7 +335,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePiec
 
     void* str = env->GetPrimitiveArrayCritical(input, nullptr);
     Status status = spp->NBestEncode(min_string_view(static_cast<const char *>(str), len), nbest_size, &pieces);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(input, str, 0);
 
     if (throwStatus(env, status)) {
         return nullptr;
@@ -357,7 +357,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePiec
 
     void* str = env->GetPrimitiveArrayCritical(input, nullptr);
     Status status = spp->NBestEncode(min_string_view(static_cast<const char *>(str), len), nbest_size, &ids);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(input, str, 0);
 
     if (throwStatus(env, status)) {
         return nullptr;
@@ -379,7 +379,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePiec
 
     void* str = env->GetPrimitiveArrayCritical(input, nullptr);
     Status status = spp->SampleEncode(min_string_view(static_cast<const char *>(str), len), nbest_size, alpha, &pieces);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(input, str, 0);
 
     if (throwStatus(env, status)) {
         return nullptr;
@@ -401,7 +401,7 @@ JNIEXPORT jintArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJN
 
     void* str = env->GetPrimitiveArrayCritical(input, nullptr);
     Status status = spp->SampleEncode(min_string_view(static_cast<const char *>(str), len), nbest_size, alpha, &ids);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(input, str, 0);
 
     if (throwStatus(env, status)) {
         return nullptr;
@@ -422,7 +422,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJ
 
     void* str = env->GetPrimitiveArrayCritical(input, nullptr);
     sentencepiece::util::bytes bytes = spp->EncodeAsSerializedProto(min_string_view(static_cast<const char *>(str), len));
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(input, str, 0);
 
     return stringToJbyteArray(env, bytes);
 }
@@ -440,7 +440,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJ
 
     void* str = env->GetPrimitiveArrayCritical(input, nullptr);
     sentencepiece::util::bytes bytes = spp->SampleEncodeAsSerializedProto(min_string_view(static_cast<const char *>(str), len), nbest_size, alpha);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(input, str, 0);
 
     return stringToJbyteArray(env, bytes);
 }
@@ -458,7 +458,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJ
 
     void* str = env->GetPrimitiveArrayCritical(input, nullptr);
     sentencepiece::util::bytes bytes = spp->NBestEncodeAsSerializedProto(min_string_view(static_cast<const char *>(str), len), nbest_size);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(input, str, 0);
 
     return stringToJbyteArray(env, bytes);
 }
@@ -523,7 +523,7 @@ JNIEXPORT jint JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
         char c = *((char *) str);
         std::cerr << "sppPieceToId:piece=d" << (int) c << ",length=" << len << std::endl;
     }
-    env->ReleasePrimitiveArrayCritical(piece, str, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(piece, str, 0);
 
     return id;
 }
