@@ -1,5 +1,7 @@
 # SentencePiece Java Wrapper
 
+[![Build Status](https://travis-ci.org/levyfan/sentencepiece-jni.svg?branch=master)](https://travis-ci.org/levyfan/sentencepiece-jni)
+
 Java wrapper for [SentencePiece](https://github.com/google/sentencepiece) with JNI. This module wraps 
 `sentencepiece::SentencePieceProcessor` class with the following modifications:
 
