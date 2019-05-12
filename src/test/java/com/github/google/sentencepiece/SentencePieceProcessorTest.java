@@ -79,6 +79,10 @@ public class SentencePieceProcessorTest {
         Assert.assertEquals("</s>", jasp.idToPiece(2));
         for (int i = 0; i < jasp.getPieceSize(); i++) {
             String piece = jasp.idToPiece(i);
+            int j = jasp.pieceToId(piece);
+            if (i != j) {
+                System.out.println("i=" + i + ",piece=" + piece + ",j=" + j);
+            }
             Assert.assertEquals(i, jasp.pieceToId(piece));
         }
     }
