@@ -19,37 +19,41 @@ jbyteArray stringToJbyteArray(JNIEnv *env, const std::string &str) {
     return array;
 }
 
-std::string jbyteArrayToString(JNIEnv *env, jbyteArray array) {
-    jsize len = env->GetArrayLength(array);
+inline jstring stringToJstring(JNIEnv *env, const std::string &str) {
+    return env->NewStringUTF(str.c_str());
+}
 
-    void *str = env->GetPrimitiveArrayCritical(array, nullptr);
-    std::string s((char *) str, len);
-    env->ReleasePrimitiveArrayCritical(array, str, JNI_ABORT);
+std::string jstringToString(JNIEnv *env, jstring array) {
+    jsize len = env->GetStringUTFLength(array);
+
+    const char *str = env->GetStringUTFChars(array, nullptr);
+    std::string s(str, len);
+    env->ReleaseStringUTFChars(array, str);
 
     return s;
 }
 
-jobjectArray vectorStringToJobjectArrayByteArray(JNIEnv *env, const std::vector<std::string> &vec) {
-    jobjectArray array = env->NewObjectArray(vec.size(), env->FindClass("[B"), nullptr);
+jobjectArray vectorStringToJobjectArrayString(JNIEnv *env, const std::vector<std::string> &vec) {
+    jobjectArray array = env->NewObjectArray(vec.size(), env->FindClass("Ljava/lang/String;"), nullptr);
     for (int i = 0; i < vec.size(); ++i) {
-        env->SetObjectArrayElement(array, i, stringToJbyteArray(env, vec[i]));
+        env->SetObjectArrayElement(array, i, stringToJstring(env, vec[i]));
     }
     return array;
 }
 
-jobjectArray vectorVectorStringToJobjectArrayObjectArrayByteArray(JNIEnv *env, const std::vector<std::vector<std::string>> &vec) {
-    jobjectArray array = env->NewObjectArray(vec.size(), env->FindClass("[[B"), nullptr);
+jobjectArray vectorVectorStringToJobjectArrayObjectArrayString(JNIEnv *env, const std::vector<std::vector<std::string>> &vec) {
+    jobjectArray array = env->NewObjectArray(vec.size(), env->FindClass("[Ljava/lang/String;"), nullptr);
     for (int i = 0; i < vec.size(); ++i) {
-        env->SetObjectArrayElement(array, i, vectorStringToJobjectArrayByteArray(env, vec[i]));
+        env->SetObjectArrayElement(array, i, vectorStringToJobjectArrayString(env, vec[i]));
     }
     return array;
 }
 
-void jobjectArrayByteArrayToVectorString(JNIEnv *env, jobjectArray array, std::vector<std::string>* vec) {
+void jobjectArrayStringToVectorString(JNIEnv *env, jobjectArray array, std::vector<std::string>* vec) {
     jsize len = env->GetArrayLength(array);
     vec->resize(len);
     for (int i = 0; i < len; ++i) {
-        (*vec)[i] = jbyteArrayToString(env, (jbyteArray) env->GetObjectArrayElement(array, i));
+        (*vec)[i] = jstringToString(env, (jstring) env->GetObjectArrayElement(array, i));
     }
 }
 
@@ -102,17 +106,17 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppLoad
- * Signature: (J[B)V
+ * Signature: (JLjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppLoad
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray filename) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring filename) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
-    jsize len = env->GetArrayLength(filename);
+    jsize len = env->GetStringUTFLength(filename);
 
-    void* str = env->GetPrimitiveArrayCritical(filename, nullptr);
-    Status status = spp->Load(min_string_view(static_cast<const char *>(str), len));
-    env->ReleasePrimitiveArrayCritical(filename, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(filename, nullptr);
+    Status status = spp->Load(min_string_view(str, len));
+    env->ReleaseStringUTFChars(filename, str);
 
     throwStatus(env, status);
 }
@@ -120,17 +124,17 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppLoadOrDie
- * Signature: (J[B)V
+ * Signature: (JLjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppLoadOrDie
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray filename) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring filename) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
-    jsize len = env->GetArrayLength(filename);
+    jsize len = env->GetStringUTFLength(filename);
 
-    void* str = env->GetPrimitiveArrayCritical(filename, nullptr);
-    spp->LoadOrDie(min_string_view(static_cast<const char *>(str), len));
-    env->ReleasePrimitiveArrayCritical(filename, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(filename, nullptr);
+    spp->LoadOrDie(min_string_view(str, len));
+    env->ReleaseStringUTFChars(filename, str);
 }
 
 /*
@@ -154,17 +158,17 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppSetEncodeExtraOptions
- * Signature: (J[B)V
+ * Signature: (JLjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppSetEncodeExtraOptions
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray extra_option) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring extra_option) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
-    jsize len = env->GetArrayLength(extra_option);
+    jsize len = env->GetStringUTFLength(extra_option);
 
-    void* str = env->GetPrimitiveArrayCritical(extra_option, nullptr);
-    Status status = spp->SetEncodeExtraOptions(min_string_view(static_cast<const char *>(str), len));
-    env->ReleasePrimitiveArrayCritical(extra_option, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(extra_option, nullptr);
+    Status status = spp->SetEncodeExtraOptions(min_string_view(str, len));
+    env->ReleaseStringUTFChars(extra_option, str);
 
     throwStatus(env, status);
 }
@@ -172,17 +176,17 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppSetDecodeExtraOptions
- * Signature: (J[B)V
+ * Signature: (JLjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppSetDecodeExtraOptions
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray extra_option) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring extra_option) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
-    jsize len = env->GetArrayLength(extra_option);
+    jsize len = env->GetStringUTFLength(extra_option);
 
-    void* str = env->GetPrimitiveArrayCritical(extra_option, nullptr);
-    Status status = spp->SetDecodeExtraOptions(min_string_view(static_cast<const char *>(str), len));
-    env->ReleasePrimitiveArrayCritical(extra_option, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(extra_option, nullptr);
+    Status status = spp->SetDecodeExtraOptions(min_string_view(str, len));
+    env->ReleaseStringUTFChars(extra_option, str);
 
     throwStatus(env, status);
 }
@@ -190,14 +194,14 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppSetVocabulary
- * Signature: (J[[B)V
+ * Signature: (J[Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppSetVocabulary
         (JNIEnv *env, jclass cls, jlong ptr, jobjectArray array) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
     std::vector<std::string> valid_vocab;
-    jobjectArrayByteArrayToVectorString(env, array, &valid_vocab);
+    jobjectArrayStringToVectorString(env, array, &valid_vocab);
 
     Status status = spp->SetVocabulary(valid_vocab);
     throwStatus(env, status);
@@ -219,17 +223,17 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppLoadVocabulary
- * Signature: (J[BI)V
+ * Signature: (JLjava/lang/String;I)V
  */
 JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppLoadVocabulary
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray filename, jint threshold) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring filename, jint threshold) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
-    jsize len = env->GetArrayLength(filename);
+    jsize len = env->GetStringUTFLength(filename);
 
-    void* str = env->GetPrimitiveArrayCritical(filename, nullptr);
-    Status status = spp->LoadVocabulary(min_string_view(static_cast<const char *>(str), len), threshold);
-    env->ReleasePrimitiveArrayCritical(filename, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(filename, nullptr);
+    Status status = spp->LoadVocabulary(min_string_view(str, len), threshold);
+    env->ReleaseStringUTFChars(filename, str);
 
     throwStatus(env, status);
 }
@@ -237,40 +241,40 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppEncodeAsPieces
- * Signature: (J[B)[[B
+ * Signature: (JLjava/lang/String;)[Ljava/lang/String;
  */
 JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppEncodeAsPieces
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray input) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring input) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
     std::vector<std::string> pieces;
-    jsize len = env->GetArrayLength(input);
+    jsize len = env->GetStringUTFLength(input);
 
-    void* str = env->GetPrimitiveArrayCritical(input, nullptr);
-    Status status = spp->Encode(min_string_view(static_cast<const char *>(str), len), &pieces);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(input, nullptr);
+    Status status = spp->Encode(min_string_view(str, len), &pieces);
+    env->ReleaseStringUTFChars(input, str);
 
     if (throwStatus(env, status)) {
         return nullptr;
     }
-    return vectorStringToJobjectArrayByteArray(env, pieces);
+    return vectorStringToJobjectArrayString(env, pieces);
 }
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppEncodeAsIds
- * Signature: (J[B)[I
+ * Signature: (JLjava/lang/String;)[I
  */
 JNIEXPORT jintArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppEncodeAsIds
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray input) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring input) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
     std::vector<int> ids;
-    jsize len = env->GetArrayLength(input);
+    jsize len = env->GetStringUTFLength(input);
 
-    void* str = env->GetPrimitiveArrayCritical(input, nullptr);
-    Status status = spp->Encode(min_string_view(static_cast<const char *>(str), len), &ids);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(input, nullptr);
+    Status status = spp->Encode(min_string_view(str, len), &ids);
+    env->ReleaseStringUTFChars(input, str);
 
     if (throwStatus(env, status)) {
         return nullptr;
@@ -281,14 +285,14 @@ JNIEXPORT jintArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJN
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppDecodePieces
- * Signature: (J[[B)[B
+ * Signature: (J[Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppDecodePieces
+JNIEXPORT jstring JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppDecodePieces
         (JNIEnv *env, jclass cls, jlong ptr, jobjectArray array) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
     std::vector<std::string> pieces;
-    jobjectArrayByteArrayToVectorString(env, array, &pieces);
+    jobjectArrayStringToVectorString(env, array, &pieces);
 
     std::string detokenized;
     Status status = spp->Decode(pieces, &detokenized);
@@ -296,15 +300,15 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJ
     if (throwStatus(env, status)) {
         return nullptr;
     }
-    return stringToJbyteArray(env, detokenized);
+    return stringToJstring(env, detokenized);
 }
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppDecodeIds
- * Signature: (J[I)[B
+ * Signature: (J[I)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppDecodeIds
+JNIEXPORT jstring JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppDecodeIds
         (JNIEnv *env, jclass cls, jlong ptr, jintArray array) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
@@ -316,46 +320,46 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJ
     if (throwStatus(env, status)) {
         return nullptr;
     }
-    return stringToJbyteArray(env, detokenized);
+    return stringToJstring(env, detokenized);
 }
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppNBestEncodeAsPieces
- * Signature: (J[BI)[[[B
+ * Signature: (JLjava/lang/String;I)[[Ljava/lang/String;
  */
 JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppNBestEncodeAsPieces
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray input, jint nbest_size) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring input, jint nbest_size) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
     std::vector<std::vector<std::string>> pieces;
-    jsize len = env->GetArrayLength(input);
+    jsize len = env->GetStringUTFLength(input);
 
-    void* str = env->GetPrimitiveArrayCritical(input, nullptr);
-    Status status = spp->NBestEncode(min_string_view(static_cast<const char *>(str), len), nbest_size, &pieces);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(input, nullptr);
+    Status status = spp->NBestEncode(min_string_view(str, len), nbest_size, &pieces);
+    env->ReleaseStringUTFChars(input, str);
 
     if (throwStatus(env, status)) {
         return nullptr;
     }
-    return vectorVectorStringToJobjectArrayObjectArrayByteArray(env, pieces);
+    return vectorVectorStringToJobjectArrayObjectArrayString(env, pieces);
 }
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppNBestEncodeAsIds
- * Signature: (J[BI)[[I
+ * Signature: (JLjava/lang/String;I)[[I
  */
 JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppNBestEncodeAsIds
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray input, jint nbest_size) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring input, jint nbest_size) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
     std::vector<std::vector<int>> ids;
-    jsize len = env->GetArrayLength(input);
+    jsize len = env->GetStringUTFLength(input);
 
-    void* str = env->GetPrimitiveArrayCritical(input, nullptr);
-    Status status = spp->NBestEncode(min_string_view(static_cast<const char *>(str), len), nbest_size, &ids);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(input, nullptr);
+    Status status = spp->NBestEncode(min_string_view(str, len), nbest_size, &ids);
+    env->ReleaseStringUTFChars(input, str);
 
     if (throwStatus(env, status)) {
         return nullptr;
@@ -366,40 +370,40 @@ JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePiec
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppSampleEncodeAsPieces
- * Signature: (J[BIF)[[B
+ * Signature: (JLjava/lang/String;IF)[Ljava/lang/String;
  */
 JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppSampleEncodeAsPieces
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray input, jint nbest_size, jfloat alpha) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring input, jint nbest_size, jfloat alpha) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
     std::vector<std::string> pieces;
-    jsize len = env->GetArrayLength(input);
+    jsize len = env->GetStringUTFLength(input);
 
-    void* str = env->GetPrimitiveArrayCritical(input, nullptr);
-    Status status = spp->SampleEncode(min_string_view(static_cast<const char *>(str), len), nbest_size, alpha, &pieces);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(input, nullptr);
+    Status status = spp->SampleEncode(min_string_view(str, len), nbest_size, alpha, &pieces);
+    env->ReleaseStringUTFChars(input, str);
 
     if (throwStatus(env, status)) {
         return nullptr;
     }
-    return vectorStringToJobjectArrayByteArray(env, pieces);
+    return vectorStringToJobjectArrayString(env, pieces);
 }
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppSampleEncodeAsIds
- * Signature: (J[BIF)[I
+ * Signature: (JLjava/lang/String;IF)[I
  */
 JNIEXPORT jintArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppSampleEncodeAsIds
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray input, jint nbest_size, jfloat alpha) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring input, jint nbest_size, jfloat alpha) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
     std::vector<int> ids;
-    jsize len = env->GetArrayLength(input);
+    jsize len = env->GetStringUTFLength(input);
 
-    void* str = env->GetPrimitiveArrayCritical(input, nullptr);
-    Status status = spp->SampleEncode(min_string_view(static_cast<const char *>(str), len), nbest_size, alpha, &ids);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(input, nullptr);
+    Status status = spp->SampleEncode(min_string_view(str, len), nbest_size, alpha, &ids);
+    env->ReleaseStringUTFChars(input, str);
 
     if (throwStatus(env, status)) {
         return nullptr;
@@ -410,17 +414,17 @@ JNIEXPORT jintArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJN
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppEncodeAsSerializedProto
- * Signature: (J[B)[B
+ * Signature: (JLjava/lang/String;)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppEncodeAsSerializedProto
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray input) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring input) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
-    jsize len = env->GetArrayLength(input);
+    jsize len = env->GetStringUTFLength(input);
 
-    void* str = env->GetPrimitiveArrayCritical(input, nullptr);
-    sentencepiece::util::bytes bytes = spp->EncodeAsSerializedProto(min_string_view(static_cast<const char *>(str), len));
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(input, nullptr);
+    sentencepiece::util::bytes bytes = spp->EncodeAsSerializedProto(min_string_view(str, len));
+    env->ReleaseStringUTFChars(input, str);
 
     return stringToJbyteArray(env, bytes);
 }
@@ -428,17 +432,17 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJ
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppSampleEncodeAsSerializedProto
- * Signature: (J[BIF)[B
+ * Signature: (JLjava/lang/String;IF)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppSampleEncodeAsSerializedProto
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray input, jint nbest_size, jfloat alpha) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring input, jint nbest_size, jfloat alpha) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
-    jsize len = env->GetArrayLength(input);
+    jsize len = env->GetStringUTFLength(input);
 
-    void* str = env->GetPrimitiveArrayCritical(input, nullptr);
-    sentencepiece::util::bytes bytes = spp->SampleEncodeAsSerializedProto(min_string_view(static_cast<const char *>(str), len), nbest_size, alpha);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(input, nullptr);
+    sentencepiece::util::bytes bytes = spp->SampleEncodeAsSerializedProto(min_string_view(str, len), nbest_size, alpha);
+    env->ReleaseStringUTFChars(input, str);
 
     return stringToJbyteArray(env, bytes);
 }
@@ -446,17 +450,17 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJ
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppNBestEncodeAsSerializedProto
- * Signature: (J[BI)[B
+ * Signature: (JLjava/lang/String;I)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppNBestEncodeAsSerializedProto
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray input, jint nbest_size) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring input, jint nbest_size) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
-    jsize len = env->GetArrayLength(input);
+    jsize len = env->GetStringUTFLength(input);
 
-    void* str = env->GetPrimitiveArrayCritical(input, nullptr);
-    sentencepiece::util::bytes bytes = spp->NBestEncodeAsSerializedProto(min_string_view(static_cast<const char *>(str), len), nbest_size);
-    env->ReleasePrimitiveArrayCritical(input, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(input, nullptr);
+    sentencepiece::util::bytes bytes = spp->NBestEncodeAsSerializedProto(min_string_view(str, len), nbest_size);
+    env->ReleaseStringUTFChars(input, str);
 
     return stringToJbyteArray(env, bytes);
 }
@@ -464,14 +468,14 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJ
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppDecodePiecesAsSerializedProto
- * Signature: (J[[B)[B
+ * Signature: (J[Ljava/lang/String;)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppDecodePiecesAsSerializedProto
         (JNIEnv *env, jclass cls, jlong ptr, jobjectArray array) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
     std::vector<std::string> pieces;
-    jobjectArrayByteArrayToVectorString(env, array, &pieces);
+    jobjectArrayStringToVectorString(env, array, &pieces);
 
     sentencepiece::util::bytes bytes = spp->DecodePiecesAsSerializedProto(pieces);
     return stringToJbyteArray(env, bytes);
@@ -506,17 +510,17 @@ JNIEXPORT jint JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppPieceToId
- * Signature: (J[B)I
+ * Signature: (JLjava/lang/String;)I
  */
 JNIEXPORT jint JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppPieceToId
-        (JNIEnv *env, jclass cls, jlong ptr, jbyteArray piece) {
+        (JNIEnv *env, jclass cls, jlong ptr, jstring piece) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
-    jsize len = env->GetArrayLength(piece);
+    jsize len = env->GetStringUTFLength(piece);
 
-    void* str = env->GetPrimitiveArrayCritical(piece, nullptr);
-    int id = spp->PieceToId(min_string_view(static_cast<const char *>(str), len));
-    env->ReleasePrimitiveArrayCritical(piece, str, JNI_ABORT);
+    const char* str = env->GetStringUTFChars(piece, nullptr);
+    int id = spp->PieceToId(min_string_view(str, len));
+    env->ReleaseStringUTFChars(piece, str);
 
     return id;
 }
@@ -524,14 +528,14 @@ JNIEXPORT jint JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppIdToPiece
- * Signature: (JI)[B
+ * Signature: (JI)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppIdToPiece
+JNIEXPORT jstring JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppIdToPiece
         (JNIEnv *env, jclass cls, jlong ptr, jint id) {
     auto* spp = (SentencePieceProcessor*) ptr;
 
     const std::string &piece = spp->IdToPiece(id);
-    return stringToJbyteArray(env, piece);
+    return stringToJstring(env, piece);
 }
 
 /*

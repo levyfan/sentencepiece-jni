@@ -1,6 +1,5 @@
 package com.github.google.sentencepiece;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,11 +19,11 @@ public class SentencePieceProcessor implements AutoCloseable {
     }
 
     public void load(String filename) throws SentencePieceException {
-        SentencePieceJNI.sppLoad(rawPtr, filename.getBytes(StandardCharsets.UTF_8));
+        SentencePieceJNI.sppLoad(rawPtr, filename);
     }
 
     public void loadOrDie(String filename) {
-        SentencePieceJNI.sppLoadOrDie(rawPtr, filename.getBytes(StandardCharsets.UTF_8));
+        SentencePieceJNI.sppLoadOrDie(rawPtr, filename);
     }
 
     public void loadFromSerializedProto(byte[] serialized) throws SentencePieceException {
@@ -32,17 +31,15 @@ public class SentencePieceProcessor implements AutoCloseable {
     }
 
     public void setEncodeExtraOptions(String extraOption) throws SentencePieceException {
-        SentencePieceJNI.sppSetEncodeExtraOptions(rawPtr, extraOption.getBytes(StandardCharsets.UTF_8));
+        SentencePieceJNI.sppSetEncodeExtraOptions(rawPtr, extraOption);
     }
 
     public void setDecodeExtraOptions(String extraOption) throws SentencePieceException {
-        SentencePieceJNI.sppSetDecodeExtraOptions(rawPtr, extraOption.getBytes(StandardCharsets.UTF_8));
+        SentencePieceJNI.sppSetDecodeExtraOptions(rawPtr, extraOption);
     }
 
     public void setVocabulary(List<String> validVocab) throws SentencePieceException {
-        byte[][] bytes = validVocab.stream()
-                .map(str -> str.getBytes(StandardCharsets.UTF_8))
-                .toArray(byte[][]::new);
+        String[] bytes = validVocab.toArray(new String[0]);
         SentencePieceJNI.sppSetVocabulary(rawPtr, bytes);
     }
 
@@ -51,71 +48,61 @@ public class SentencePieceProcessor implements AutoCloseable {
     }
 
     public void loadVocabulary(String filename, int threshold) throws SentencePieceException {
-        SentencePieceJNI.sppLoadVocabulary(rawPtr, filename.getBytes(StandardCharsets.UTF_8), threshold);
+        SentencePieceJNI.sppLoadVocabulary(rawPtr, filename, threshold);
     }
 
     public List<String> encodeAsPieces(String input) throws SentencePieceException {
-        byte[][] pieces = SentencePieceJNI.sppEncodeAsPieces(rawPtr, input.getBytes(StandardCharsets.UTF_8));
-        return Arrays.stream(pieces)
-                .map(bytes -> new String(bytes, StandardCharsets.UTF_8))
-                .collect(Collectors.toList());
+        String[] pieces = SentencePieceJNI.sppEncodeAsPieces(rawPtr, input);
+        return Arrays.asList(pieces);
     }
 
     public int[] encodeAsIds(String input) throws SentencePieceException {
-        return SentencePieceJNI.sppEncodeAsIds(rawPtr, input.getBytes(StandardCharsets.UTF_8));
+        return SentencePieceJNI.sppEncodeAsIds(rawPtr, input);
     }
 
     public String decodePieces(List<String> pieces) throws SentencePieceException {
-        byte[][] bytes = pieces.stream()
-                .map(str -> str.getBytes(StandardCharsets.UTF_8))
-                .toArray(byte[][]::new);
-        return new String(SentencePieceJNI.sppDecodePieces(rawPtr, bytes), StandardCharsets.UTF_8);
+        String[] bytes = pieces.toArray(new String[0]);
+        return SentencePieceJNI.sppDecodePieces(rawPtr, bytes);
     }
 
     public String decodeIds(int... ids) throws SentencePieceException {
-        return new String(SentencePieceJNI.sppDecodeIds(rawPtr, ids), StandardCharsets.UTF_8);
+        return SentencePieceJNI.sppDecodeIds(rawPtr, ids);
     }
 
     public List<List<String>> nbestEncodeAsPieces(String input, int nbestSize) throws SentencePieceException {
-        byte[][][] pieces = SentencePieceJNI.sppNBestEncodeAsPieces(rawPtr, input.getBytes(StandardCharsets.UTF_8), nbestSize);
+        String[][] pieces = SentencePieceJNI.sppNBestEncodeAsPieces(rawPtr, input, nbestSize);
         return Arrays.stream(pieces)
-                .map(bytes -> Arrays.stream(bytes)
-                        .map(b -> new String(b, StandardCharsets.UTF_8))
-                        .collect(Collectors.toList()))
+                .map(Arrays::asList)
                 .collect(Collectors.toList());
     }
 
     public int[][] nbestEncodeAsIds(String input, int nbestSize) throws SentencePieceException {
-        return SentencePieceJNI.sppNBestEncodeAsIds(rawPtr, input.getBytes(StandardCharsets.UTF_8), nbestSize);
+        return SentencePieceJNI.sppNBestEncodeAsIds(rawPtr, input, nbestSize);
     }
 
     public List<String> sampleEncodeAsPieces(String input, int nbestSize, float alpha) throws SentencePieceException {
-        byte[][] pieces = SentencePieceJNI.sppSampleEncodeAsPieces(rawPtr, input.getBytes(StandardCharsets.UTF_8), nbestSize, alpha);
-        return Arrays.stream(pieces)
-                .map(bytes -> new String(bytes, StandardCharsets.UTF_8))
-                .collect(Collectors.toList());
+        String[] pieces = SentencePieceJNI.sppSampleEncodeAsPieces(rawPtr, input, nbestSize, alpha);
+        return Arrays.asList(pieces);
     }
 
     public int[] sampleEncodeAsIds(String input, int nbestSize, float alpha) throws SentencePieceException {
-        return SentencePieceJNI.sppSampleEncodeAsIds(rawPtr, input.getBytes(StandardCharsets.UTF_8), nbestSize, alpha);
+        return SentencePieceJNI.sppSampleEncodeAsIds(rawPtr, input, nbestSize, alpha);
     }
 
     public byte[] encodeAsSerializedProto(String input) {
-        return SentencePieceJNI.sppEncodeAsSerializedProto(rawPtr, input.getBytes(StandardCharsets.UTF_8));
+        return SentencePieceJNI.sppEncodeAsSerializedProto(rawPtr, input);
     }
 
     public byte[] sampleEncodeAsSerializedProto(String input, int nbestSize, float alpha) {
-        return SentencePieceJNI.sppSampleEncodeAsSerializedProto(rawPtr, input.getBytes(StandardCharsets.UTF_8), nbestSize, alpha);
+        return SentencePieceJNI.sppSampleEncodeAsSerializedProto(rawPtr, input, nbestSize, alpha);
     }
 
     public byte[] nbestEncodeAsSerializedProto(String input, int nbestSize) {
-        return SentencePieceJNI.sppNBestEncodeAsSerializedProto(rawPtr, input.getBytes(StandardCharsets.UTF_8), nbestSize);
+        return SentencePieceJNI.sppNBestEncodeAsSerializedProto(rawPtr, input, nbestSize);
     }
 
     public byte[] decodePiecesAsSerializedProto(List<String> pieces) {
-        byte[][] bytes = pieces.stream()
-                .map(str -> str.getBytes(StandardCharsets.UTF_8))
-                .toArray(byte[][]::new);
+        String[] bytes = pieces.toArray(new String[0]);
         return SentencePieceJNI.sppDecodePiecesAsSerializedProto(rawPtr, bytes);
     }
 
@@ -128,11 +115,11 @@ public class SentencePieceProcessor implements AutoCloseable {
     }
 
     public int pieceToId(String piece) {
-        return SentencePieceJNI.sppPieceToId(rawPtr, piece.getBytes(StandardCharsets.UTF_8));
+        return SentencePieceJNI.sppPieceToId(rawPtr, piece);
     }
 
     public String idToPiece(int id) {
-        return new String(SentencePieceJNI.sppIdToPiece(rawPtr, id), StandardCharsets.UTF_8);
+        return SentencePieceJNI.sppIdToPiece(rawPtr, id);
     }
 
     public float getScore(int id) {
