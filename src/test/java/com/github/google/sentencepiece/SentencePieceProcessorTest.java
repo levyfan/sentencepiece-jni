@@ -22,8 +22,8 @@ public class SentencePieceProcessorTest {
         jasp = new SentencePieceProcessor();
         sp.load("./test_model.model");
         jasp.load("./test_ja_model.model");
-        sp.loadFromSerializedProto(Files.readAllBytes(Paths.get("test_model.model")));
-        jasp.loadFromSerializedProto(Files.readAllBytes(Paths.get("test_ja_model.model")));
+        sp.loadFromSerializedProto(Files.readAllBytes(Paths.get("./test_model.model")));
+        jasp.loadFromSerializedProto(Files.readAllBytes(Paths.get("./test_ja_model.model")));
     }
 
     @After
@@ -77,6 +77,10 @@ public class SentencePieceProcessorTest {
         Assert.assertEquals("<unk>", jasp.idToPiece(0));
         Assert.assertEquals("<s>", jasp.idToPiece(1));
         Assert.assertEquals("</s>", jasp.idToPiece(2));
+        Assert.assertNotEquals(0, jasp.pieceToId("2"));
+        Assert.assertNotEquals(0, jasp.pieceToId("3"));
+        Assert.assertNotEquals(0, jasp.pieceToId("("));
+        Assert.assertNotEquals(0, jasp.pieceToId(")"));
         for (int i = 0; i < jasp.getPieceSize(); i++) {
             String piece = jasp.idToPiece(i);
             int j = jasp.pieceToId(piece);
