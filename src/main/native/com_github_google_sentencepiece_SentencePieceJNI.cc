@@ -1,5 +1,7 @@
 #include "sentencepiece_processor.h"
 #include "com_github_google_sentencepiece_SentencePieceJNI.h"
+#include <iostream>
+#include <string>
 
 using sentencepiece::SentencePieceProcessor;
 using sentencepiece::util::Status;
@@ -516,6 +518,9 @@ JNIEXPORT jint JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 
     void* str = env->GetPrimitiveArrayCritical(piece, nullptr);
     int id = spp->PieceToId(min_string_view(static_cast<const char *>(str), len));
+    if (id == 0) {
+        std::cerr << "sppPieceToId:piece=" << std::string((char *) str, len) << ",id=" << id << std::endl;
+    }
     env->ReleasePrimitiveArrayCritical(piece, str, JNI_ABORT);
 
     return id;
