@@ -1,0 +1,11 @@
+dist: trusty
+language: java
+addons:
+  apt:
+    packages:
+      - cmake
+jdk:
+  - oraclejdk8
+  - oraclejdk9
+  - openjdk10
+  - oraclejdk11

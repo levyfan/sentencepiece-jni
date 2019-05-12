@@ -26,18 +26,18 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppLoad
- * Signature: (J[B)V
+ * Signature: (JLjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppLoad
-  (JNIEnv *, jclass, jlong, jbyteArray);
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppLoadOrDie
- * Signature: (J[B)V
+ * Signature: (JLjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppLoadOrDie
-  (JNIEnv *, jclass, jlong, jbyteArray);
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
@@ -50,23 +50,23 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppSetEncodeExtraOptions
- * Signature: (J[B)V
+ * Signature: (JLjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppSetEncodeExtraOptions
-  (JNIEnv *, jclass, jlong, jbyteArray);
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppSetDecodeExtraOptions
- * Signature: (J[B)V
+ * Signature: (JLjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppSetDecodeExtraOptions
-  (JNIEnv *, jclass, jlong, jbyteArray);
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppSetVocabulary
- * Signature: (J[[B)V
+ * Signature: (J[Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppSetVocabulary
   (JNIEnv *, jclass, jlong, jobjectArray);
@@ -82,103 +82,103 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppLoadVocabulary
- * Signature: (J[BI)V
+ * Signature: (JLjava/lang/String;I)V
  */
 JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppLoadVocabulary
-  (JNIEnv *, jclass, jlong, jbyteArray, jint);
+  (JNIEnv *, jclass, jlong, jstring, jint);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppEncodeAsPieces
- * Signature: (J[B)[[B
+ * Signature: (JLjava/lang/String;)[Ljava/lang/String;
  */
 JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppEncodeAsPieces
-  (JNIEnv *, jclass, jlong, jbyteArray);
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppEncodeAsIds
- * Signature: (J[B)[I
+ * Signature: (JLjava/lang/String;)[I
  */
 JNIEXPORT jintArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppEncodeAsIds
-  (JNIEnv *, jclass, jlong, jbyteArray);
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppDecodePieces
- * Signature: (J[[B)[B
+ * Signature: (J[Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppDecodePieces
+JNIEXPORT jstring JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppDecodePieces
   (JNIEnv *, jclass, jlong, jobjectArray);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppDecodeIds
- * Signature: (J[I)[B
+ * Signature: (J[I)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppDecodeIds
+JNIEXPORT jstring JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppDecodeIds
   (JNIEnv *, jclass, jlong, jintArray);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppNBestEncodeAsPieces
- * Signature: (J[BI)[[[B
+ * Signature: (JLjava/lang/String;I)[[Ljava/lang/String;
  */
 JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppNBestEncodeAsPieces
-  (JNIEnv *, jclass, jlong, jbyteArray, jint);
+  (JNIEnv *, jclass, jlong, jstring, jint);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppNBestEncodeAsIds
- * Signature: (J[BI)[[I
+ * Signature: (JLjava/lang/String;I)[[I
  */
 JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppNBestEncodeAsIds
-  (JNIEnv *, jclass, jlong, jbyteArray, jint);
+  (JNIEnv *, jclass, jlong, jstring, jint);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppSampleEncodeAsPieces
- * Signature: (J[BIF)[[B
+ * Signature: (JLjava/lang/String;IF)[Ljava/lang/String;
  */
 JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppSampleEncodeAsPieces
-  (JNIEnv *, jclass, jlong, jbyteArray, jint, jfloat);
+  (JNIEnv *, jclass, jlong, jstring, jint, jfloat);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppSampleEncodeAsIds
- * Signature: (J[BIF)[I
+ * Signature: (JLjava/lang/String;IF)[I
  */
 JNIEXPORT jintArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppSampleEncodeAsIds
-  (JNIEnv *, jclass, jlong, jbyteArray, jint, jfloat);
+  (JNIEnv *, jclass, jlong, jstring, jint, jfloat);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppEncodeAsSerializedProto
- * Signature: (J[B)[B
+ * Signature: (JLjava/lang/String;)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppEncodeAsSerializedProto
-  (JNIEnv *, jclass, jlong, jbyteArray);
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppSampleEncodeAsSerializedProto
- * Signature: (J[BIF)[B
+ * Signature: (JLjava/lang/String;IF)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppSampleEncodeAsSerializedProto
-  (JNIEnv *, jclass, jlong, jbyteArray, jint, jfloat);
+  (JNIEnv *, jclass, jlong, jstring, jint, jfloat);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppNBestEncodeAsSerializedProto
- * Signature: (J[BI)[B
+ * Signature: (JLjava/lang/String;I)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppNBestEncodeAsSerializedProto
-  (JNIEnv *, jclass, jlong, jbyteArray, jint);
+  (JNIEnv *, jclass, jlong, jstring, jint);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppDecodePiecesAsSerializedProto
- * Signature: (J[[B)[B
+ * Signature: (J[Ljava/lang/String;)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppDecodePiecesAsSerializedProto
   (JNIEnv *, jclass, jlong, jobjectArray);
@@ -202,17 +202,17 @@ JNIEXPORT jint JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppPieceToId
- * Signature: (J[B)I
+ * Signature: (JLjava/lang/String;)I
  */
 JNIEXPORT jint JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppPieceToId
-  (JNIEnv *, jclass, jlong, jbyteArray);
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     com_github_google_sentencepiece_SentencePieceJNI
  * Method:    sppIdToPiece
- * Signature: (JI)[B
+ * Signature: (JI)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppIdToPiece
+JNIEXPORT jstring JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppIdToPiece
   (JNIEnv *, jclass, jlong, jint);
 
 /*
