@@ -20,6 +20,8 @@ To build and install the Java wrapper from source, please try the following comm
 % mvn clean install
 ```
 
+Please note you need to have gcc, cmake and libnative installed.
+
 ## Usage
 
 See [SentencePieceProcessorTest](src/test/java/com/github/google/sentencepiece/SentencePieceProcessorTest.java) for more.
