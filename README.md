@@ -10,7 +10,7 @@ Java wrapper for [SentencePiece](https://github.com/google/sentencepiece) with J
 
 ## SentencePiece Version
 
-[v0.1.82](https://github.com/google/sentencepiece/releases/tag/v0.1.82)
+[v0.1.92](https://github.com/google/sentencepiece/releases/tag/v0.1.92)
 
 ## Build and Install SentencePiece
 
