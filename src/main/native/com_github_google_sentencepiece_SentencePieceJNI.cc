@@ -3,14 +3,14 @@
 
 using sentencepiece::SentencePieceProcessor;
 using sentencepiece::util::Status;
-using sentencepiece::util::min_string_view;
+using absl::string_view;
 
 int throwStatus(JNIEnv *env, const Status &status) {
     if (!status.ok()) {
         jclass cls = env->FindClass("com/github/google/sentencepiece/SentencePieceException");
         env->ThrowNew(cls, status.ToString().c_str());
     }
-    return status.code();
+    return (int) status.code();
 }
 
 jbyteArray stringToJbyteArray(JNIEnv *env, const std::string &str) {
@@ -115,7 +115,7 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
     jsize len = env->GetStringUTFLength(filename);
 
     const char* str = env->GetStringUTFChars(filename, nullptr);
-    Status status = spp->Load(min_string_view(str, len));
+    Status status = spp->Load(string_view(str, len));
     env->ReleaseStringUTFChars(filename, str);
 
     throwStatus(env, status);
@@ -133,7 +133,7 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
     jsize len = env->GetStringUTFLength(filename);
 
     const char* str = env->GetStringUTFChars(filename, nullptr);
-    spp->LoadOrDie(min_string_view(str, len));
+    spp->LoadOrDie(string_view(str, len));
     env->ReleaseStringUTFChars(filename, str);
 }
 
@@ -149,7 +149,7 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
     jsize len = env->GetArrayLength(serialized);
 
     void* str = env->GetPrimitiveArrayCritical(serialized, nullptr);
-    Status status = spp->LoadFromSerializedProto(min_string_view(static_cast<const char *>(str), len));
+    Status status = spp->LoadFromSerializedProto(string_view(static_cast<const char *>(str), len));
     env->ReleasePrimitiveArrayCritical(serialized, str, JNI_ABORT);
 
     throwStatus(env, status);
@@ -167,7 +167,7 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
     jsize len = env->GetStringUTFLength(extra_option);
 
     const char* str = env->GetStringUTFChars(extra_option, nullptr);
-    Status status = spp->SetEncodeExtraOptions(min_string_view(str, len));
+    Status status = spp->SetEncodeExtraOptions(string_view(str, len));
     env->ReleaseStringUTFChars(extra_option, str);
 
     throwStatus(env, status);
@@ -185,7 +185,7 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
     jsize len = env->GetStringUTFLength(extra_option);
 
     const char* str = env->GetStringUTFChars(extra_option, nullptr);
-    Status status = spp->SetDecodeExtraOptions(min_string_view(str, len));
+    Status status = spp->SetDecodeExtraOptions(string_view(str, len));
     env->ReleaseStringUTFChars(extra_option, str);
 
     throwStatus(env, status);
@@ -232,7 +232,7 @@ JNIEXPORT void JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
     jsize len = env->GetStringUTFLength(filename);
 
     const char* str = env->GetStringUTFChars(filename, nullptr);
-    Status status = spp->LoadVocabulary(min_string_view(str, len), threshold);
+    Status status = spp->LoadVocabulary(string_view(str, len), threshold);
     env->ReleaseStringUTFChars(filename, str);
 
     throwStatus(env, status);
@@ -251,7 +251,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePiec
     jsize len = env->GetStringUTFLength(input);
 
     const char* str = env->GetStringUTFChars(input, nullptr);
-    Status status = spp->Encode(min_string_view(str, len), &pieces);
+    Status status = spp->Encode(string_view(str, len), &pieces);
     env->ReleaseStringUTFChars(input, str);
 
     if (throwStatus(env, status)) {
@@ -273,7 +273,7 @@ JNIEXPORT jintArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJN
     jsize len = env->GetStringUTFLength(input);
 
     const char* str = env->GetStringUTFChars(input, nullptr);
-    Status status = spp->Encode(min_string_view(str, len), &ids);
+    Status status = spp->Encode(string_view(str, len), &ids);
     env->ReleaseStringUTFChars(input, str);
 
     if (throwStatus(env, status)) {
@@ -336,7 +336,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePiec
     jsize len = env->GetStringUTFLength(input);
 
     const char* str = env->GetStringUTFChars(input, nullptr);
-    Status status = spp->NBestEncode(min_string_view(str, len), nbest_size, &pieces);
+    Status status = spp->NBestEncode(string_view(str, len), nbest_size, &pieces);
     env->ReleaseStringUTFChars(input, str);
 
     if (throwStatus(env, status)) {
@@ -358,7 +358,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePiec
     jsize len = env->GetStringUTFLength(input);
 
     const char* str = env->GetStringUTFChars(input, nullptr);
-    Status status = spp->NBestEncode(min_string_view(str, len), nbest_size, &ids);
+    Status status = spp->NBestEncode(string_view(str, len), nbest_size, &ids);
     env->ReleaseStringUTFChars(input, str);
 
     if (throwStatus(env, status)) {
@@ -380,7 +380,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_github_google_sentencepiece_SentencePiec
     jsize len = env->GetStringUTFLength(input);
 
     const char* str = env->GetStringUTFChars(input, nullptr);
-    Status status = spp->SampleEncode(min_string_view(str, len), nbest_size, alpha, &pieces);
+    Status status = spp->SampleEncode(string_view(str, len), nbest_size, alpha, &pieces);
     env->ReleaseStringUTFChars(input, str);
 
     if (throwStatus(env, status)) {
@@ -402,7 +402,7 @@ JNIEXPORT jintArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJN
     jsize len = env->GetStringUTFLength(input);
 
     const char* str = env->GetStringUTFChars(input, nullptr);
-    Status status = spp->SampleEncode(min_string_view(str, len), nbest_size, alpha, &ids);
+    Status status = spp->SampleEncode(string_view(str, len), nbest_size, alpha, &ids);
     env->ReleaseStringUTFChars(input, str);
 
     if (throwStatus(env, status)) {
@@ -423,7 +423,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJ
     jsize len = env->GetStringUTFLength(input);
 
     const char* str = env->GetStringUTFChars(input, nullptr);
-    sentencepiece::util::bytes bytes = spp->EncodeAsSerializedProto(min_string_view(str, len));
+    sentencepiece::util::bytes bytes = spp->EncodeAsSerializedProto(string_view(str, len));
     env->ReleaseStringUTFChars(input, str);
 
     return stringToJbyteArray(env, bytes);
@@ -441,7 +441,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJ
     jsize len = env->GetStringUTFLength(input);
 
     const char* str = env->GetStringUTFChars(input, nullptr);
-    sentencepiece::util::bytes bytes = spp->SampleEncodeAsSerializedProto(min_string_view(str, len), nbest_size, alpha);
+    sentencepiece::util::bytes bytes = spp->SampleEncodeAsSerializedProto(string_view(str, len), nbest_size, alpha);
     env->ReleaseStringUTFChars(input, str);
 
     return stringToJbyteArray(env, bytes);
@@ -459,7 +459,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_google_sentencepiece_SentencePieceJ
     jsize len = env->GetStringUTFLength(input);
 
     const char* str = env->GetStringUTFChars(input, nullptr);
-    sentencepiece::util::bytes bytes = spp->NBestEncodeAsSerializedProto(min_string_view(str, len), nbest_size);
+    sentencepiece::util::bytes bytes = spp->NBestEncodeAsSerializedProto(string_view(str, len), nbest_size);
     env->ReleaseStringUTFChars(input, str);
 
     return stringToJbyteArray(env, bytes);
@@ -519,7 +519,7 @@ JNIEXPORT jint JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
     jsize len = env->GetStringUTFLength(piece);
 
     const char* str = env->GetStringUTFChars(piece, nullptr);
-    int id = spp->PieceToId(min_string_view(str, len));
+    int id = spp->PieceToId(string_view(str, len));
     env->ReleaseStringUTFChars(piece, str);
 
     return id;
