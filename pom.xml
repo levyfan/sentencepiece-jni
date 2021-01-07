@@ -43,7 +43,10 @@
                             <executable>cmake</executable>
                             <arguments>
                                 <argument>-DCMAKE_BUILD_TYPE=Release</argument>
+                                <argument>-DJAVA_HOME=${env.JAVA_HOME}</argument>
                                 <argument>-DCMAKE_INSTALL_PREFIX=${project.build.outputDirectory}</argument>
+                                <argument>-DSPM_BUILD_TEST=ON</argument>
+                                <argument>-DSPM_ENABLE_SHARED=OFF</argument>
                                 <argument>${project.basedir}/src/main/native/</argument>
                             </arguments>
                             <workingDirectory>${project.build.directory}</workingDirectory>
@@ -58,8 +61,10 @@
                         <configuration>
                             <executable>cmake</executable>
                             <arguments>
-                                <argument>build</argument>
+                                <argument>--build</argument>
                                 <argument>.</argument>
+                                <argument>--config</argument>
+                                <argument>Release</argument>
                                 <argument>--target</argument>
                                 <argument>install</argument>
                             </arguments>
