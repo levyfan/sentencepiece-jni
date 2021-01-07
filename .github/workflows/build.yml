@@ -19,10 +19,12 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: ${{ matrix.java }}
-    - name: "Set environment conditionally"
-      env:
-        JAVA_HOME: "$PWD/windows-jni/"
+    - name: "Build Windows"
       if: matrix.os == 'windows-latest'
-    - name: Build with Maven
+      run: |
+        mvn -f pom-windows.xml clean install
+    - name: "Build non-Windows"
+      if: matrix.os != 'windows-latest'
       run: |
         mvn clean install
+
