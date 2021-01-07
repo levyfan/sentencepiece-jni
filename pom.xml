@@ -50,14 +50,17 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>make</id>
+                        <id>install</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>make</executable>
+                            <executable>cmake</executable>
                             <arguments>
+                                <argument>build</argument>
+                                <argument>.</argument>
+                                <argument>--target</argument>
                                 <argument>install</argument>
                             </arguments>
                             <workingDirectory>${project.build.directory}</workingDirectory>
