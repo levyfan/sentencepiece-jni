@@ -47,7 +47,7 @@
                                 <argument>-DCMAKE_INSTALL_PREFIX=${project.build.outputDirectory}</argument>
                                 <argument>-DSPM_BUILD_TEST=ON</argument>
                                 <argument>-DSPM_ENABLE_SHARED=OFF</argument>
-                                <argument>${project.basedir}/src/main/native/</argument>
+                                <argument>${project.basedir}/src/main/native/windows/</argument>
                             </arguments>
                             <workingDirectory>${project.build.directory}</workingDirectory>
                         </configuration>
