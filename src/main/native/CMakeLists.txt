@@ -12,6 +12,7 @@ if (MSVC)
     message(FATAL_ERROR
       "sentencepiece-jni requires JAVA_HOME to be defined for Windows builds.")
   endif()
+  message("JAVA_HOME is ${JAVA_HOME}")
   set(JNI_HEADERS ${JAVA_HOME}/include)
   set(sentencepiece_STATIC_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/sentencepiece/src/sentencepiece-build/src/Release/sentencepiece.lib)
   set(CMAKE_CACHE_ARGS
