@@ -43,7 +43,7 @@
                             <executable>cmake</executable>
                             <arguments>
                                 <argument>-DCMAKE_BUILD_TYPE=Release</argument>
-                                <argument>-DJAVA_HOME=windows-jni</argument>
+                                <argument>-DJAVA_HOME=${env.PWD}/windows-jni/</argument>
                                 <argument>-DCMAKE_INSTALL_PREFIX=${project.build.outputDirectory}</argument>
                                 <argument>-DSPM_BUILD_TEST=ON</argument>
                                 <argument>-DSPM_ENABLE_SHARED=OFF</argument>
