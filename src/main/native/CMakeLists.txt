@@ -8,6 +8,10 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 include(ExternalProject)
 
 if (MSVC)
+  if (NOT JAVA_HOME)
+    message(FATAL_ERROR
+      "sentencepiece-jni requires JAVA_HOME to be defined for Windows builds.")
+  endif()
   set(JNI_HEADERS ${JAVA_HOME}/include)
   set(sentencepiece_STATIC_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/sentencepiece/src/sentencepiece-build/src/Release/sentencepiece.lib)
   set(CMAKE_CACHE_ARGS
