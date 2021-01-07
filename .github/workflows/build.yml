@@ -8,7 +8,7 @@ jobs:
       max-parallel: 10
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         java: [8, 9, 10, 11]
 
     runs-on: ${{ matrix.os }}
@@ -19,6 +19,10 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: ${{ matrix.java }}
+    - name: "Set environment conditionally"
+      env:
+        JAVA_HOME: "$PWD/windows-jni/"
+      if: matrix.os == 'windows-latest'
     - name: Build with Maven
       run: |
         mvn clean install
