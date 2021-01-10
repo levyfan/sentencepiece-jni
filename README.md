@@ -20,7 +20,13 @@ To build and install the Java wrapper from source, please try the following comm
 % mvn clean install
 ```
 
-Please note you need to have gcc, cmake and libnative installed.
+If you're trying to build on Windows, you need to specify the Windows-compatible pom file:
+
+```bash
+% mvn -f pom-windows.xml clean install
+```
+
+Please note you need to have a C++ compiler and cmake installed.
 
 ## Usage
 
