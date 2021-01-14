@@ -19,12 +19,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: ${{ matrix.java }}
-    - name: "Build Windows"
-      if: matrix.os == 'windows-latest'
-      run: |
-        mvn -P windows clean install
-    - name: "Build non-Windows"
-      if: matrix.os != 'windows-latest'
+    - name: "Build"
       run: |
         mvn clean install
 
