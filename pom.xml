@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.github.levyfan</groupId>
     <artifactId>sentencepiece</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -16,7 +15,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <profiles>
         <profile>
             <!--default is non-Windows build-->
@@ -69,57 +67,56 @@
         <profile>
             <id>windows</id>
             <build>
-                  <plugins>
-                      <plugin>
-                      <groupId>org.codehaus.mojo</groupId>
-                      <artifactId>exec-maven-plugin</artifactId>
-                      <version>1.6.0</version>
-                      <executions>
-                          <execution>
-                              <id>cmake</id>
-                              <phase>compile</phase>
-                              <goals>
-                                  <goal>exec</goal>
-                              </goals>
-                              <configuration>
-                                  <executable>cmake</executable>
-                                  <arguments>
-                                      <argument>-DCMAKE_BUILD_TYPE=Release</argument>
-                                      <argument>-DJAVA_HOME=${project.basedir}/windows-jni/</argument>
-                                      <argument>-DCMAKE_INSTALL_PREFIX=${project.build.outputDirectory}</argument>
-                                      <argument>-DSPM_BUILD_TEST=ON</argument>
-                                      <argument>-DSPM_ENABLE_SHARED=OFF</argument>
-                                      <argument>${project.basedir}/src/main/native/</argument>
-                                  </arguments>
-                                  <workingDirectory>${project.build.directory}</workingDirectory>
-                              </configuration>
-                          </execution>
-                          <execution>
-                              <id>install</id>
-                              <phase>compile</phase>
-                              <goals>
-                                  <goal>exec</goal>
-                              </goals>
-                              <configuration>
-                                  <executable>cmake</executable>
-                                  <arguments>
-                                      <argument>--build</argument>
-                                      <argument>.</argument>
-                                      <argument>--config</argument>
-                                      <argument>Release</argument>
-                                      <argument>--target</argument>
-                                      <argument>install</argument>
-                                  </arguments>
-                                  <workingDirectory>${project.build.directory}</workingDirectory>
-                              </configuration>
-                          </execution>
-                      </executions>
-                  </plugin>
-            </plugins>
-        </build>
-      </profile>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>cmake</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>cmake</executable>
+                                    <arguments>
+                                        <argument>-DCMAKE_BUILD_TYPE=Release</argument>
+                                        <argument>-DJAVA_HOME=${project.basedir}/windows-jni/</argument>
+                                        <argument>-DCMAKE_INSTALL_PREFIX=${project.build.outputDirectory}</argument>
+                                        <argument>-DSPM_BUILD_TEST=ON</argument>
+                                        <argument>-DSPM_ENABLE_SHARED=OFF</argument>
+                                        <argument>${project.basedir}/src/main/native/</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.build.directory}</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>install</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>cmake</executable>
+                                    <arguments>
+                                        <argument>--build</argument>
+                                        <argument>.</argument>
+                                        <argument>--config</argument>
+                                        <argument>Release</argument>
+                                        <argument>--target</argument>
+                                        <argument>install</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.build.directory}</workingDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
-
     <build>
         <extensions>
             <extension>
@@ -130,9 +127,9 @@
         </extensions>
         <plugins>
             <plugin>
-               <artifactId>maven-jar-plugin</artifactId>
-               <version>3.1.0</version>
-               <configuration>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
                     <classifier>${os.detected.classifier}</classifier>
                 </configuration>
             </plugin>
@@ -147,8 +144,8 @@
             </plugin>
         </plugins>
     </build>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 </project>
+
