@@ -26,6 +26,10 @@ If you're trying to build on Windows, you need to specify the Windows-compatible
 % mvn -f pom-windows.xml clean install
 ```
 
+## Using sentencepiece-jni as a dependency
+
+Because the resulting JAR is platform-dependent, resolving this dependency is managed by the [os-maven-plugin](https://github.com/trustin/os-maven-plugin). Follow the instructions there to use this platform-dependent JAR.
+
 Please note you need to have a C++ compiler and cmake installed.
 
 ## Usage
