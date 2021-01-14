@@ -20,10 +20,10 @@ To build and install the Java wrapper from source, please try the following comm
 % mvn clean install
 ```
 
-If you're trying to build on Windows, you need to specify the Windows-compatible pom file:
+If you're trying to build on Windows, you need to specify the Windows-compatible profile:
 
 ```bash
-% mvn -f pom-windows.xml clean install
+% mvn -P windows clean install
 ```
 
 ## Using sentencepiece-jni as a dependency

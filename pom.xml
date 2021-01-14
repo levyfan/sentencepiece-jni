@@ -17,6 +17,109 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <!--default is non-Windows build-->
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>cmake</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>cmake</executable>
+                                    <arguments>
+                                        <argument>-DCMAKE_BUILD_TYPE=Release</argument>
+                                        <argument>-DCMAKE_INSTALL_PREFIX=${project.build.outputDirectory}</argument>
+                                        <argument>${project.basedir}/src/main/native/</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.build.directory}</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>make</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>make</executable>
+                                    <arguments>
+                                        <argument>install</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.build.directory}</workingDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>windows</id>
+            <build>
+                  <plugins>
+                      <plugin>
+                      <groupId>org.codehaus.mojo</groupId>
+                      <artifactId>exec-maven-plugin</artifactId>
+                      <version>1.6.0</version>
+                      <executions>
+                          <execution>
+                              <id>cmake</id>
+                              <phase>compile</phase>
+                              <goals>
+                                  <goal>exec</goal>
+                              </goals>
+                              <configuration>
+                                  <executable>cmake</executable>
+                                  <arguments>
+                                      <argument>-DCMAKE_BUILD_TYPE=Release</argument>
+                                      <argument>-DJAVA_HOME=${project.basedir}/windows-jni/</argument>
+                                      <argument>-DCMAKE_INSTALL_PREFIX=${project.build.outputDirectory}</argument>
+                                      <argument>-DSPM_BUILD_TEST=ON</argument>
+                                      <argument>-DSPM_ENABLE_SHARED=OFF</argument>
+                                      <argument>${project.basedir}/src/main/native/</argument>
+                                  </arguments>
+                                  <workingDirectory>${project.build.directory}</workingDirectory>
+                              </configuration>
+                          </execution>
+                          <execution>
+                              <id>install</id>
+                              <phase>compile</phase>
+                              <goals>
+                                  <goal>exec</goal>
+                              </goals>
+                              <configuration>
+                                  <executable>cmake</executable>
+                                  <arguments>
+                                      <argument>--build</argument>
+                                      <argument>.</argument>
+                                      <argument>--config</argument>
+                                      <argument>Release</argument>
+                                      <argument>--target</argument>
+                                      <argument>install</argument>
+                                  </arguments>
+                                  <workingDirectory>${project.build.directory}</workingDirectory>
+                              </configuration>
+                          </execution>
+                      </executions>
+                  </plugin>
+            </plugins>
+        </build>
+      </profile>
+    </profiles>
+
     <build>
         <extensions>
             <extension>
@@ -41,43 +144,6 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <id>cmake</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>cmake</executable>
-                            <arguments>
-                                <argument>-DCMAKE_BUILD_TYPE=Release</argument>
-                                <argument>-DCMAKE_INSTALL_PREFIX=${project.build.outputDirectory}</argument>
-                                <argument>${project.basedir}/src/main/native/</argument>
-                            </arguments>
-                            <workingDirectory>${project.build.directory}</workingDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>make</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>make</executable>
-                            <arguments>
-                                <argument>install</argument>
-                            </arguments>
-                            <workingDirectory>${project.build.directory}</workingDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
