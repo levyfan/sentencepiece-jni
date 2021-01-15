@@ -20,12 +20,6 @@ To build and install the Java wrapper from source, please try the following comm
 % mvn clean install
 ```
 
-If you're trying to build on Windows, you need to specify the Windows-compatible pom file:
-
-```bash
-% mvn -f pom-windows.xml clean install
-```
-
 ## Using sentencepiece-jni as a dependency
 
 Because the resulting JAR is platform-dependent, resolving this dependency is managed by the [os-maven-plugin](https://github.com/trustin/os-maven-plugin). Follow the instructions there to use this platform-dependent JAR.
