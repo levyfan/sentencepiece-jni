@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.levyfan</groupId>
     <artifactId>sentencepiece</artifactId>
-    <version>0.0.2</version>
+    
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -135,7 +135,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <classifier>${os.detected.classifier}</classifier>
+                    <version>0.0.2-${os.detected.classifier}</version>
                 </configuration>
             </plugin>
             <plugin>
