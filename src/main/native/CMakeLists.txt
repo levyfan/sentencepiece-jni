@@ -34,7 +34,7 @@ set(sentencepiece_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/sentencepiece/src/sen
 ExternalProject_Add(sentencepiece
     PREFIX sentencepiece
     GIT_REPOSITORY https://github.com/google/sentencepiece.git
-    GIT_TAG v0.1.92
+    GIT_TAG v0.1.96
     INSTALL_COMMAND ""
     CMAKE_CACHE_ARGS ${CMAKE_CACHE_ARGS}
 )
