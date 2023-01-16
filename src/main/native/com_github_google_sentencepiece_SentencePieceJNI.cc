@@ -533,7 +533,11 @@ JNIEXPORT jint JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_spp
 JNIEXPORT jstring JNICALL Java_com_github_google_sentencepiece_SentencePieceJNI_sppIdToPiece
         (JNIEnv *env, jclass cls, jlong ptr, jint id) {
     auto* spp = (SentencePieceProcessor*) ptr;
-
+    if (id < 0 || id >= spp->GetPieceSize()) {
+        jclass cls = env->FindClass("com/github/google/sentencepiece/SentencePieceException");
+        env->ThrowNew(cls, "id must be 0 <= id < GetPieceSize()");
+        return nullptr;
+    }
     const std::string &piece = spp->IdToPiece(id);
     return stringToJstring(env, piece);
 }

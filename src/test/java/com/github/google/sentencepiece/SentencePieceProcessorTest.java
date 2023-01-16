@@ -109,4 +109,9 @@ public class SentencePieceProcessorTest {
         Assert.assertNotEquals(none, sp.decodePiecesAsSerializedProto(Arrays.asList("foo", "bar")));
         Assert.assertNotEquals(none, sp.decodeIdsAsSerializedProto(20, 30));
     }
+
+    @Test
+    public void testIllegalId() {
+        Assert.assertThrows(SentencePieceException.class, () -> sp.idToPiece(38067));
+    }
 }
